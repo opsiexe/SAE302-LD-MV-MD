@@ -1,0 +1,37 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: weather-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    networks:
+      - weather-net
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: weather-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - weather-net
+    volumes:
+      - ./frontend:/app
+
+  redis:
+    image: redis:7
+    container_name: weather-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - weather-net
+
+networks:
+  weather-net:
+    driver: bridge
