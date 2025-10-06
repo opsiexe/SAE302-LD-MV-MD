@@ -2,14 +2,16 @@ FROM node:20
 
 WORKDIR /app
 
+# Copy package files first
 COPY package*.json ./
 
-# Ne pas installer automatiquement pour dev, on fera dans le conteneur
+# Install dependencies (installs express, axios, etc.)
 RUN npm install
 
+# Copy rest of the code
 COPY . .
 
-EXPOSE 5000
+EXPOSE 3000
 
-# Conteneur reste allumé pour initialisation
-CMD ["npx", "nodemon", "server.js"]
+# Use your npm dev script
+CMD ["npm", "run", "dev"]

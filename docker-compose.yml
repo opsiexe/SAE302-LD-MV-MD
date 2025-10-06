@@ -9,20 +9,21 @@ services:
     networks:
       - weather-net
     volumes:
-      - ./backend:/app
+    - ./backend:/app
+    - /app/node_modules
 
   frontend:
     build:
-      context: ./frontend
+      context: ./Frontend
+      dockerfile: Dockerfile
     container_name: weather-frontend
-    restart: always
     ports:
       - "3000:3000"
-    networks:
-      - weather-net
     volumes:
-      - ./frontend:/app
+      - ./Frontend:/app
       - /app/node_modules
+    depends_on:
+      - backend
 
   redis:
     image: redis:7
