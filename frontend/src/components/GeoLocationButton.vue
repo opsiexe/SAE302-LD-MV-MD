@@ -1,9 +1,14 @@
 <template>
-  <button class="geo-btn" @click="getLocation" title="Me localiser">
+  <button
+    @click="getLocation"
+    title="Me localiser"
+    class="fixed top-4 right-4 z-50 flex items-center justify-center 
+           w-12 h-12 rounded-full bg-gray-300 hover:bg-gray-400 
+           shadow-md transition-colors duration-200"
+  >
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
+      class="w-6 h-6"
       viewBox="0 0 24 24"
       fill="none"
       stroke="black"
@@ -39,22 +44,3 @@ const getLocation = () => {
   }
 }
 </script>
-
-<style scoped>
-.geo-btn {
-  background-color: #d3d3d3; /* gris clair */
-  border: none;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s;
-}
-.geo-btn:hover {
-  background-color: #bfbfbf;
-}
-</style>
