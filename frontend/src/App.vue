@@ -1,4 +1,5 @@
 <script setup>
+import searchBar from './components/searchBar.vue';
 import HelloWorld from './components/HelloWorld.vue'
 import GeoLocationButton from './components/GeoLocationButton.vue'
 
@@ -10,6 +11,7 @@ const handleGeoLocation = ({ lat, lon }) => {
 </script>
 
 <template>
+  <searchBar />
   <div class="container">
     <div>
       <a href="https://vite.dev" target="_blank">
