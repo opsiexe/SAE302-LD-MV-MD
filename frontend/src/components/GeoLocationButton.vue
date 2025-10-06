@@ -2,9 +2,7 @@
   <button @click="getLocation" title="Me localiser" class="fixed top-4 right-4 z-50 flex items-center justify-center 
            w-12 h-12 rounded-full bg-main hover:bg-main-200
            shadow-md transition-colors duration-200">
-    <span class="text-black text-2xl">
-      <font-awesome-icon icon="location-arrow" />
-    </span>
+    <font-awesome-icon icon="location-arrow" class="text-black text-2xl" style="transform: translateX(-1px);" />
   </button>
 </template>
 
