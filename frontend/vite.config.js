@@ -8,4 +8,9 @@ export default defineConfig({
     vue(),
     tailwindcss(),
   ],
+  server: {
+    watch: {
+      usePolling: true, // utile si tu es sur un réseau ou VM
+    },
+  }
 })

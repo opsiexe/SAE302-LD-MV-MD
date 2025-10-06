@@ -1,1 +1,15 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-main : oklch(0.5624 0 0);
+  --color-secondary : oklch(0.6993 0 0);
+}
+
+body {
+  background-color: black;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
