@@ -1,57 +1,34 @@
-import express from 'express'; 
-// Importation du framework Express pour créer le serveur HTTP.
+import express from 'express'; // Importation du framework Express pour créer le serveur HTTP.
+import cors from 'cors';  // Importation du middleware CORS pour gérer les requêtes cross-origin (autoriser le frontend à appeler le backend depuis un autre port).
+import dotenv from 'dotenv'; // Importation de dotenv pour charger les variables d'environnement depuis un fichier .env.
+import { createClient } from 'redis'; // Importation de la fonction pour créer un client Redis, utilisé pour mettre en cache les réponses.
+import { WebSocketServer } from 'ws'; // Importation de WebSocketServer pour gérer les connexions WebSocket (communication temps réel).
 
-import cors from 'cors'; 
-// Importation du middleware CORS pour gérer les requêtes cross-origin (autoriser le frontend à appeler le backend depuis un autre port).
+dotenv.config(); // Charge les variables d'environnement du fichier .env dans process.env.
 
-import dotenv from 'dotenv'; 
-// Importation de dotenv pour charger les variables d'environnement depuis un fichier .env.
 
-import { createClient } from 'redis'; 
-// Importation de la fonction pour créer un client Redis, utilisé pour mettre en cache les réponses.
+const app = express(); // Création de l'application Express.
+app.use(cors()); // Active CORS pour toutes les routes, afin que le frontend puisse appeler le backend.
+app.use(express.json()); // Parse automatiquement le corps des requêtes JSON en objet JavaScript.
 
-import { WebSocketServer } from 'ws'; 
-// Importation de WebSocketServer pour gérer les connexions WebSocket (communication temps réel).
+const redisClient = createClient({ url: process.env.REDIS_URL }); // Création d'un client Redis en utilisant l'URL fournie dans le .env.
+redisClient.connect().catch(console.error); // Connexion au serveur Redis. Si erreur, elle est loggée.
 
-dotenv.config(); 
-// Charge les variables d'environnement du fichier .env dans process.env.
-
-const app = express(); 
-// Création de l'application Express.
-
-app.use(cors()); 
-// Active CORS pour toutes les routes, afin que le frontend puisse appeler le backend.
-
-app.use(express.json()); 
-// Parse automatiquement le corps des requêtes JSON en objet JavaScript.
-
-const redisClient = createClient({ url: process.env.REDIS_URL }); 
-// Création d'un client Redis en utilisant l'URL fournie dans le .env.
-
-redisClient.connect().catch(console.error); 
-// Connexion au serveur Redis. Si erreur, elle est loggée.
-
-app.get('/ping', (req, res) => res.json({ message: 'pong' })); 
-// Route test pour vérifier que le backend fonctionne. Retourne un JSON { message: 'pong' }.
+app.get('/ping', (req, res) => res.json({ message: 'pong' })); // Route test pour vérifier que le backend fonctionne. Retourne un JSON { message: 'pong' }.
 
 const server = app.listen(process.env.PORT || 5000, () =>
   console.log('Backend running on port 5000')
 ); 
 // Lancement du serveur HTTP sur le port défini dans .env (ou 5000 par défaut). Log dans la console.
 
-const wss = new WebSocketServer({ server }); 
-// Création d'un serveur WebSocket attaché au serveur HTTP existant.
-
+const wss = new WebSocketServer({ server }); // Création d'un serveur WebSocket attaché au serveur HTTP existant.
 wss.on('connection', ws => {
   ws.send(JSON.stringify({ message: 'Connected to WebSocket backend' }));
 });
 // Lorsqu'un client se connecte en WebSocket, lui envoyer un message de confirmation.
 
-const TTL_CURRENT = Number(process.env.CACHE_TTL_CURRENT) || 300;     
-// TTL pour la météo actuelle : durée pendant laquelle les données sont mises en cache (5 minutes par défaut).
-
-const TTL_FORECAST = Number(process.env.CACHE_TTL_FORECAST) || 3600; 
-// TTL pour prévisions horaires/journalières/alertes : durée en cache (1h par défaut).
+const TTL_CURRENT = Number(process.env.CACHE_TTL_CURRENT) || 300; // TTL pour la météo actuelle : durée pendant laquelle les données sont mises en cache (5 minutes par défaut).
+const TTL_FORECAST = Number(process.env.CACHE_TTL_FORECAST) || 3600; // TTL pour prévisions horaires/journalières/alertes : durée en cache (1h par défaut).
 
 /**
  * Route : météo actuelle
