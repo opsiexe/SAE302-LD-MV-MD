@@ -1,22 +1,94 @@
+<script setup>
+import { ref } from 'vue'
+
+// Props pour personnaliser le composant
+const props = defineProps({
+    placeholder: {
+        type: String,
+        default: 'Rechercher une ville'
+    },
+    modelValue: {
+        type: String,
+        default: ''
+    },
+    width: {
+        type: String,
+        default: 'w-96'
+    },
+    disabled: {
+        type: Boolean,
+        default: false
+    }
+})
+
+// Événements émis par le composant
+const emit = defineEmits(['update:modelValue', 'search', 'input', 'focus', 'blur'])
+
+// État local
+const inputValue = ref(props.modelValue)
+
+// Méthodes
+const handleInput = (event) => {
+    inputValue.value = event.target.value
+    emit('update:modelValue', event.target.value)
+    emit('input', event.target.value)
+}
+
+const handleSearch = () => {
+    emit('search', inputValue.value)
+}
+
+const handleKeyup = (event) => {
+    if (event.key === 'Enter') {
+        handleSearch()
+    }
+}
+
+const handleFocus = (event) => {
+    emit('focus', event)
+}
+
+const handleBlur = (event) => {
+    emit('blur', event)
+}
+</script>
+
 <template>
-    <div class="fixed flex flex-col justify-end items-center bottom-0 left-0 m-5 w-100 bg-main rounded-2xl">
+    <div class="relative m-2" :class="width">
+        <!-- Icône loupe -->
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-black text-xl font-bold cursor-pointer"
+            @click="handleSearch">
+            <font-awesome-icon icon="magnifying-glass" />
+        </span>
 
-        <!-- Chevron-Up centré, un peu plus bas -->
-        <div class="flex justify-center w-full mt-2">
-            <font-awesome-icon icon="chevron-up" class="text-black text-2xl font-bold hover:text-gray-700" />
-        </div>
-
-        <!-- Wrapper relatif pour l'input et l'icône -->
-        <div class="relative w-96 m-2">
-            <!-- Icône loupe -->
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-black text-xl font-bold">
-                <font-awesome-icon icon="magnifying-glass" />
-            </span>
-
-            <!-- Input -->
-            <input type="search" class="w-full h-12 bg-secondary rounded-xl shadow-2xl pl-12 pr-3 py-2 placeholder-text"
-                placeholder="Rechercher une ville" />
-        </div>
-
+        <!-- Input -->
+        <input type="search" :value="inputValue" @input="handleInput" @keyup="handleKeyup" @focus="handleFocus"
+            @blur="handleBlur" :placeholder="props.placeholder" :disabled="props.disabled"
+            class="w-full h-12 bg-secondary rounded-xl shadow-xl/40 pl-12 pr-3 py-2 placeholder-text text-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
     </div>
 </template>
+
+<style scoped>
+/* Personnalisation du bouton de suppression (X) de l'input search */
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cline x1='18' y1='6' x2='6' y2='18'%3e%3c/line%3e%3cline x1='6' y1='6' x2='18' y2='18'%3e%3c/line%3e%3c/svg%3e");
+    background-size: 16px 16px;
+    cursor: pointer;
+}
+
+input[type="search"]::-webkit-search-cancel-button:hover {
+    opacity: 0.6;
+    transform: scale(1.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    transition: all 0.2s ease-in-out;
+}
+</style>
