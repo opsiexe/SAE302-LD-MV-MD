@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import SearchBar from './SearchBar.vue'
+import CurrentWeatherCard from './CurrentWeatherCard.vue'
 
 const isOpen = ref(false)
 const searchValue = ref('')
@@ -62,6 +63,16 @@ onUnmounted(() => {
         </div>
 
       </div>
+
+      <!-- Contenu du dashboard qui apparaît après l'animation d'ouverture -->
+      <transition name="slide-in-content">
+        <div v-if="isOpen" class="flex-1 overflow-y-auto px-1 sm:px-3 pb-4 sm:pb-6">
+          <!-- Carte météo actuelle alignée à gauche -->
+          <div class="flex justify-start">
+            <CurrentWeatherCard />
+          </div>
+        </div>
+      </transition>
     </div>
 
     <!-- Overlay sombre quand le dashboard est ouvert -->
