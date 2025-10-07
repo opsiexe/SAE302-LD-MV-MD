@@ -10,9 +10,21 @@ mapboxgl.accessToken = "pk.eyJ1Ijoib3BzaSIsImEiOiJjbWZnaHJsbXUwMTEwMmlxcWR0bGE3d
 
 export default {
     name: 'Map',
+    emits: ['click-coord'],
     data() {
         return {
             map: null
+        }
+    },
+    methods: {
+        resetBearing() {
+            if (this.map) {
+                this.map.easeTo({
+                    bearing: 0,
+                    pitch: 0,
+                    duration: 1000
+                });
+            }
         }
     },
     mounted() {
@@ -36,8 +48,6 @@ export default {
                     }
                 });
 
-                // map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'top-left')
-
                 // Fog léger
                 map.setFog({
                     range: [3, 10],
@@ -49,6 +59,12 @@ export default {
                 map.panBy([-200, 0], { duration: 0 });
 
                 console.log('🗺️ Carte Mapbox chargée avec succès');
+            });
+
+            map.on('click', (e) => {
+                const coords = e.lngLat; // { lng, lat }
+                console.log('Clicked coordinates:', coords);
+                this.$emit('click-coord', coords);
             });
 
             // Gestion des erreurs
