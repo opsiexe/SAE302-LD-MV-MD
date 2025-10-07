@@ -19,193 +19,150 @@ const handleSearchClick = () => {
 <template>
   <!-- Conteneur principal avec carte en arrière-plan -->
   <div class="relative w-screen h-screen overflow-hidden">
-    
-    <!-- Carte (arrière-plan) -->
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-700 to-green-800">
-      <div class="w-full h-full flex items-center justify-center text-white/20 text-4xl">
-        Votre carte interactive ici
-      </div>
-    </div>
 
     <!-- Barre de recherche qui s'agrandit en dashboard -->
-    <div 
-      :class="[
-        'fixed z-50 flex flex-col rounded-2xl shadow-xl/50 transition-all duration-500 bg-main',
-        isOpen 
-          ? 'top-1/2 left-1/2 w-[90vw] max-w-6xl h-[70vh] backdrop-blur-xl'
-          : 'bottom-8 left-8 w-auto'
-      ]"
-      :style="isOpen ? 'transform: translate(-50%, -50%);' : ''"
-    >
+    <div class="dashboard-container bg-main" :class="{ 'is-open': isOpen }">
       <!-- En-tête avec flèche et barre de recherche -->
-      <div 
-        :class="[
-          'flex items-center transition-all duration-500',
-          isOpen ? 'justify-between p-6 pb-4 border-b border-gray-700' : 'flex-col'
-        ]"
-      >
-        <!-- Flèche -->
-        <div :class="isOpen ? 'order-1' : 'flex justify-center w-full mt-2'">
-          <font-awesome-icon
-            :icon="isOpen ? 'chevron-down' : 'chevron-up'"
-            :class="[
-              'text-2xl font-bold cursor-pointer transition-all duration-300',
-              isOpen ? 'text-white/70 hover:text-white' : 'text-black hover:text-text'
-            ]"
-            @click="toggleDashboard"
-          />
-        </div>
-
-        <!-- Barre de recherche -->
-        <div 
-          :class="[
-            'transition-all duration-500',
-            isOpen ? 'flex-1 order-0' : ''
-          ]"
-          @click="handleSearchClick"
-        >
-          <SearchBar 
-            v-model="searchValue"
-            placeholder="Rechercher une ville"
-            :class="isOpen ? 'pointer-events-auto' : ''"
-          />
-        </div>
-
-        <!-- Titre (visible uniquement quand ouvert) -->
-        <transition name="fade-title">
-          <h2 v-if="isOpen" class="text-2xl font-bold text-white order-2 mx-4">
-            {{ searchValue || 'Météo Dashboard' }}
-          </h2>
-        </transition>
-
-        <!-- Bouton fermer (visible uniquement quand ouvert) -->
-        <transition name="fade-title">
-          <button 
-            v-if="isOpen"
-            @click="toggleDashboard"
-            class="text-white/70 hover:text-white transition-colors p-2 order-3"
-          >
-            <font-awesome-icon icon="times" class="text-2xl" />
-          </button>
-        </transition>
-      </div>
-
-      <!-- Contenu du dashboard (visible uniquement quand ouvert) -->
-      <transition name="fade-content">
-        <div v-if="isOpen" class="p-6 pt-4 h-[calc(100%-100px)] overflow-hidden">
-          <!-- Grille du dashboard -->
-          <div class="grid grid-cols-3 gap-4 h-full">
-            <!-- Carte / Données météo (2 colonnes) -->
-            <div class="col-span-2 rounded-xl p-4 overflow-hidden" style="background-color: var(--color-card);">
-              <h3 class="text-lg font-semibold mb-3 text-white">Carte / Données météo</h3>
-              <div class="w-full h-[calc(100%-40px)] bg-slate-400 rounded-lg flex items-center justify-center">
-                <p class="text-slate-700">Carte météo détaillée</p>
-              </div>
-            </div>
-
-            <!-- Widget météo (1 colonne) -->
-            <div class="rounded-xl p-4 bg-card">
-              <h3 class="text-lg font-semibold mb-3 text-white">Widget météo</h3>
-              <div class="space-y-4">
-                <div class="text-center">
-                  <div class="text-5xl font-bold text-white">22°C</div>
-                  <p class="text-slate-200 mt-2">Partiellement nuageux</p>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-sm">
-                  <div class="bg-card rounded p-2">
-                    <p class="text-slate-700">Humidité</p>
-                    <p class="font-semibold text-white">65%</p>
-                  </div>
-                  <div class="bg-card rounded p-2">
-                    <p class="text-slate-700">Vent</p>
-                    <p class="font-semibold text-white">12 km/h</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Prévision 1 -->
-            <div class="rounded-xl p-4" style="background-color: var(--color-card);">
-              <h3 class="text-lg font-semibold mb-3 text-white">Aujourd'hui</h3>
-              <div class="flex flex-col items-center justify-center h-[calc(100%-40px)]">
-                <div class="text-3xl font-bold mb-2 text-white">24°C</div>
-                <p class="text-slate-200">Max: 26°C</p>
-                <p class="text-slate-200">Min: 18°C</p>
-              </div>
-            </div>
-
-            <!-- Prévision 2 -->
-            <div class="rounded-xl p-4" style="background-color: var(--color-card);">
-              <h3 class="text-lg font-semibold mb-3 text-white">Demain</h3>
-              <div class="flex flex-col items-center justify-center h-[calc(100%-40px)]">
-                <div class="text-3xl font-bold mb-2 text-white">23°C</div>
-                <p class="text-slate-200">Max: 25°C</p>
-                <p class="text-slate-200">Min: 17°C</p>
-              </div>
-            </div>
-
-            <!-- Prévision 3 -->
-            <div class="rounded-xl p-4" style="background-color: var(--color-card);">
-              <h3 class="text-lg font-semibold mb-3 text-white">Après-demain</h3>
-              <div class="flex flex-col items-center justify-center h-[calc(100%-40px)]">
-                <div class="text-3xl font-bold mb-2 text-white">25°C</div>
-                <p class="text-slate-200">Max: 27°C</p>
-                <p class="text-slate-200">Min: 19°C</p>
-              </div>
-            </div>
+      <div :class="[
+        'flex flex-col flex-shrink-0',
+        'transition-all duration-500 ease-out',
+        isOpen ? 'pt-1 pl-1 pr-6 pb-6 justify-start' : 'h-24 p-1 justify-center'
+      ]">
+        <!-- Flèche (toujours en haut) -->
+        <transition name="chevron-delay">
+          <div v-if="!isOpen" :class="[
+            'transition-all duration-500 ease-out flex w-full justify-center mb-0'
+          ]">
+            <font-awesome-icon icon="chevron-up" :class="[
+              'text-2xl font-bold cursor-pointer transition-all duration-300 text-secon hover:text-text'
+            ]" @click="toggleDashboard" />
           </div>
+        </transition>
+        <div v-if="isOpen" :class="[
+          'transition-all duration-500 ease-out flex w-full justify-start mb-1'
+        ]">
+          <font-awesome-icon icon="chevron-down" :class="[
+            'text-2xl font-bold cursor-pointer transition-all duration-300 text-white/70 hover:text-white'
+          ]" @click="toggleDashboard" />
         </div>
-      </transition>
+
+        <!-- Barre de recherche (en dessous) -->
+        <div :class="[
+          'transition-all duration-500 ease-out flex w-full items-center justify-start'
+        ]" @click="handleSearchClick">
+          <SearchBar v-model="searchValue" placeholder="Rechercher une ville"
+            :class="isOpen ? 'pointer-events-auto' : ''" />
+        </div>
+
+      </div>
     </div>
 
     <!-- Overlay sombre quand le dashboard est ouvert -->
     <transition name="fade-overlay">
-      <div
-        v-if="isOpen"
-        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-        @click="toggleDashboard"
-      ></div>
+      <div v-if="isOpen" class="fixed inset-0 bg-black/50 z-40" @click="toggleDashboard"></div>
     </transition>
   </div>
 </template>
 
 <style scoped>
-/* Animation du contenu du dashboard */
-.fade-content-enter-active {
-  transition: opacity 0.4s ease 0.3s;
+/* Animation séquentielle : étape 1 - Redimensionnement + SearchBar (500ms) */
+/* Animation séquentielle : étape 2 - Contenu qui apparaît après (délai 500ms + durée 400ms) */
+
+/* Container du dashboard avec animations CSS pures pour éviter les glitches */
+.dashboard-container {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  bottom: 2rem;
+  left: 2rem;
+  width: 25rem;
+  height: 6rem;
+  max-width: 25rem;
+  transition: width 0.5s ease-out, height 0.5s ease-out, max-width 0.5s ease-out;
+  transform-origin: bottom left;
+  overflow: hidden;
+  backface-visibility: hidden;
+  will-change: width, height, max-width;
 }
 
-.fade-content-leave-active {
-  transition: opacity 0.2s ease;
+.dashboard-container.is-open {
+  width: calc(100vw - 4rem);
+  max-width: 80rem;
+  height: calc(90vh);
 }
 
-.fade-content-enter-from,
-.fade-content-leave-to {
+/* Animation du contenu du dashboard - Apparaît APRÈS le redimensionnement */
+.slide-in-content-enter-active {
+  transition: all 0.4s ease 0.5s;
+  /* Délai de 500ms pour attendre la fin du redimensionnement */
+}
+
+.slide-in-content-leave-active {
+  transition: all 0.25s ease;
+  /* Sort plus rapidement pour éviter les glitches */
+}
+
+.slide-in-content-enter-from {
   opacity: 0;
+  transform: translateY(10px);
 }
 
-/* Animation du titre et bouton fermer */
-.fade-title-enter-active {
-  transition: opacity 0.3s ease 0.4s;
-}
-
-.fade-title-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-title-enter-from,
-.fade-title-leave-to {
+.slide-in-content-leave-to {
   opacity: 0;
+  transform: translateY(10px);
 }
 
-/* Animation de l'overlay */
-.fade-overlay-enter-active,
+/* Animation du titre et bouton fermer - Apparaît avec le redimensionnement */
+.slide-in-title-enter-active {
+  transition: all 0.3s ease 0.3s;
+  /* Apparaît pendant le redimensionnement */
+}
+
+.slide-in-title-leave-active {
+  transition: all 0.15s ease;
+  /* Sort très rapidement pour éviter les glitches */
+}
+
+.slide-in-title-enter-from {
+  opacity: 0;
+  transform: translateX(-5px);
+}
+
+.slide-in-title-leave-to {
+  opacity: 0;
+  transform: translateX(-5px);
+}
+
+/* Animation de l'overlay - Synchronisé avec le redimensionnement */
+.fade-overlay-enter-active {
+  transition: opacity 0.5s ease;
+}
+
 .fade-overlay-leave-active {
-  transition: opacity 0.4s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fade-overlay-enter-from,
 .fade-overlay-leave-to {
+  opacity: 0;
+}
+
+/* Animation du chevron - Apparaît après la fermeture */
+.chevron-delay-enter-active {
+  transition: opacity 0.2s ease 0.5s;
+  /* Délai de 500ms pour attendre la fin de la fermeture */
+}
+
+.chevron-delay-leave-active {
+  transition: opacity 0.1s ease;
+  /* Sort rapidement */
+}
+
+.chevron-delay-enter-from,
+.chevron-delay-leave-to {
   opacity: 0;
 }
 </style>
