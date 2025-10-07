@@ -1,7 +1,7 @@
 <script setup>
-import searchBar from './components/searchBar.vue';
-import GeoLocationButton from './components/GeoLocationButton.vue'
-import WeatherDashboard from './components/WeatherDashboard.vue';
+import SearchBar from './components/Dashboard.vue';
+import GeoLocationButton from './components/GeoLocationButton.vue';
+import Map from './components/map.vue';
 
 // Fonction déclenchée quand on reçoit les coordonnées du bouton
 const handleGeoLocation = ({ lat, lon }) => {
@@ -11,7 +11,15 @@ const handleGeoLocation = ({ lat, lon }) => {
 </script>
 
 <template>
-  <searchBar />
-  <GeoLocationButton @get-location="handleGeoLocation" />
-  <WeatherDashboard />
+  <div id="app" class="h-screen w-screen">
+    <Map />
+    <SearchBar />
+    <GeoLocationButton @get-location="handleGeoLocation" />
+  </div>
 </template>
+
+<style scoped>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+</style>
