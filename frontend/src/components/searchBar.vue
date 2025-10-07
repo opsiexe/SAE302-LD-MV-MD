@@ -64,7 +64,7 @@ const handleBlur = (event) => {
         <!-- Input -->
         <input type="search" :value="inputValue" @input="handleInput" @keyup="handleKeyup" @focus="handleFocus"
             @blur="handleBlur" :placeholder="props.placeholder" :disabled="props.disabled"
-            class="w-full h-12 bg-secondary rounded-xl shadow-xl/40 pl-12 pr-3 py-2 placeholder-text text-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
+            class="w-full h-12 bg-secondary rounded-xl inset-shadow-xl pl-12 pr-3 py-2 placeholder-text text-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
     </div>
 </template>
 
