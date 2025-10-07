@@ -10,6 +10,6 @@ import SearchBar from './searchBar.vue';
             <font-awesome-icon icon="chevron-up" class="text-black text-2xl font-bold hover:text-text" />
         </div>
         <SearchBar placeholder="Rechercher une ville" />
-        // test
+        
     </div>
 </template>
