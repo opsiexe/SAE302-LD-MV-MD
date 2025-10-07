@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue'
-import SearchBar from './searchBar.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import SearchBar from './SearchBar.vue'
+import CurrentWeatherCard from './CurrentWeatherCard.vue'
 
 const isOpen = ref(false)
 const searchValue = ref('')
@@ -14,6 +15,20 @@ const handleSearchClick = () => {
     isOpen.value = true
   }
 }
+
+const handleKeydown = (event) => {
+  if (event.key === 'Escape' && isOpen.value) {
+    isOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>
@@ -26,7 +41,7 @@ const handleSearchClick = () => {
       <div :class="[
         'flex flex-col flex-shrink-0',
         'transition-all duration-500 ease-out',
-        isOpen ? 'pt-1 pl-1 pr-6 pb-6 justify-start' : 'h-24 p-1 justify-center'
+        isOpen ? 'pt-1 pl-1 pr-3 sm:pr-6 pb-4 sm:pb-6 justify-start' : 'h-20 sm:h-24 p-1 justify-center'
       ]">
         <!-- Flèche (toujours en haut) -->
         <transition name="chevron-delay">
@@ -34,17 +49,10 @@ const handleSearchClick = () => {
             'transition-all duration-500 ease-out flex w-full justify-center mb-0'
           ]">
             <font-awesome-icon icon="chevron-up" :class="[
-              'text-2xl font-bold cursor-pointer transition-all duration-300 text-secon hover:text-text'
+              'text-xl sm:text-2xl font-bold cursor-pointer transition-all duration-300 text-secon hover:text-text'
             ]" @click="toggleDashboard" />
           </div>
         </transition>
-        <div v-if="isOpen" :class="[
-          'transition-all duration-500 ease-out flex w-full justify-start mb-1'
-        ]">
-          <font-awesome-icon icon="chevron-down" :class="[
-            'text-2xl font-bold cursor-pointer transition-all duration-300 text-white/70 hover:text-white'
-          ]" @click="toggleDashboard" />
-        </div>
 
         <!-- Barre de recherche (en dessous) -->
         <div :class="[
@@ -55,6 +63,16 @@ const handleSearchClick = () => {
         </div>
 
       </div>
+
+      <!-- Contenu du dashboard qui apparaît après l'animation d'ouverture -->
+      <transition name="slide-in-content">
+        <div v-if="isOpen" class="flex-1 overflow-y-auto px-1 sm:px-3 pb-4 sm:pb-6">
+          <!-- Carte météo actuelle alignée à gauche -->
+          <div class="flex justify-start">
+            <CurrentWeatherCard />
+          </div>
+        </div>
+      </transition>
     </div>
 
     <!-- Overlay sombre quand le dashboard est ouvert -->
@@ -90,8 +108,59 @@ const handleSearchClick = () => {
 
 .dashboard-container.is-open {
   width: calc(100vw - 4rem);
-  max-width: 80rem;
-  height: calc(90vh);
+  max-width: 95rem;
+  height: calc(93vh);
+}
+
+/* Responsive pour tablettes */
+@media (max-width: 768px) {
+  .dashboard-container {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 20rem;
+    max-width: 20rem;
+  }
+
+  .dashboard-container.is-open {
+    width: calc(100vw - 3rem);
+    height: calc(90vh);
+  }
+}
+
+/* Responsive pour mobiles */
+@media (max-width: 480px) {
+  .dashboard-container {
+    bottom: 1rem;
+    left: 1rem;
+    width: calc(100vw - 2rem);
+    max-width: calc(100vw - 2rem);
+    border-radius: 0.75rem;
+  }
+
+  .dashboard-container.is-open {
+    width: calc(100vw - 2rem);
+    height: calc(88vh);
+    bottom: 1rem;
+    left: 1rem;
+  }
+}
+
+/* Responsive pour très petits écrans */
+@media (max-width: 360px) {
+  .dashboard-container {
+    bottom: 0.75rem;
+    left: 0.75rem;
+    width: calc(100vw - 1.5rem);
+    max-width: calc(100vw - 1.5rem);
+    border-radius: 0.5rem;
+  }
+
+  .dashboard-container.is-open {
+    width: calc(100vw - 1.5rem);
+    height: calc(86vh);
+    bottom: 0.75rem;
+    left: 0.75rem;
+  }
 }
 
 /* Animation du contenu du dashboard - Apparaît APRÈS le redimensionnement */
