@@ -29,7 +29,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="weather-card bg-card rounded-2xl p-5 ml-1 shadow-xl/40">
+    <div class="weather-card bg-card rounded-2xl p-5 ml-1 shadow-xl/20">
         <!-- En-tête avec condition météo -->
         <div class="weather-header mb-4">
             <h3 class="text-xl font-semibold text-white mb-2">Météo actuelle</h3>
