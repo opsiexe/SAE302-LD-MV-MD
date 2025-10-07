@@ -56,7 +56,7 @@ const handleBlur = (event) => {
 <template>
     <div class="relative m-2" :class="width">
         <!-- Icône loupe -->
-        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-black text-xl font-bold cursor-pointer"
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secon text-xl font-bold cursor-pointer"
             @click="handleSearch">
             <font-awesome-icon icon="magnifying-glass" />
         </span>
@@ -64,7 +64,7 @@ const handleBlur = (event) => {
         <!-- Input -->
         <input type="search" :value="inputValue" @input="handleInput" @keyup="handleKeyup" @focus="handleFocus"
             @blur="handleBlur" :placeholder="props.placeholder" :disabled="props.disabled"
-            class="w-full h-12 bg-secondary rounded-xl inset-shadow-xl pl-12 pr-3 py-2 placeholder-text text-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
+            class="w-full h-12 bg-secondary rounded-xl shadow-inner custom-inset-shadow pl-12 pr-3 py-2 placeholder-text text-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed" />
     </div>
 </template>
 
@@ -90,5 +90,10 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 
 input[type="search"]::-webkit-search-cancel-button {
     transition: all 0.2s ease-in-out;
+}
+
+/* Ombre intérieure personnalisée plus prononcée */
+.custom-inset-shadow {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.20), inset 0 1px 2px 0 rgba(0, 0, 0, 0.15);
 }
 </style>
