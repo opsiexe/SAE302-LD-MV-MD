@@ -4,7 +4,7 @@ import App from './App.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faMagnifyingGlass,faChevronUp,faLocationArrow, faCompass } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faChevronUp, faLocationArrow, faCompass } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faMagnifyingGlass, faLocationArrow, faChevronUp, faCompass)
 

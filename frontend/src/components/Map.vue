@@ -7,7 +7,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-mapboxgl.accessToken = "pk.eyJ1Ijoib3BzaSIsImEiOiJjbWZnaHJsbXUwMTEwMmlxcWR0bGE3dDdmIn0.DT0bU9R5XM8zTgiT_5rhlQ";
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 const emit = defineEmits(['click-coord']);
 const mapContainer = ref(null);
