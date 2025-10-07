@@ -4,7 +4,8 @@
   --color-main : oklch(0.3311 0 183);
   --color-secondary : oklch(0.2777 0 183);
   --color-text: oklch(0.4271 0 183);
-  --color-secon: oklch(0.85 0 0)
+  --color-secon: oklch(0.85 0 0);
+  --color-card: oklch(0.4947 0 183)
 }
 
 body {
