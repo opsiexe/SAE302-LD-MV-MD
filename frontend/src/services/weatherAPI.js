@@ -71,6 +71,43 @@ class WeatherAPI {
   }
 
   /**
+   * Récupère le nom de la ville à partir des coordonnées (géocodage inverse)
+   * @param {number} lat - Latitude
+   * @param {number} lon - Longitude
+   * @returns {Promise<string>} Nom de la ville
+   */
+  static async getCityName(lat, lon) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/geocoding/reverse?lat=${lat}&lon=${lon}`);
+      
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Données de géocodage récupérées:', data);
+      
+      // Retourne le nom de la ville ou un fallback si pas trouvé
+      if (data && data.length > 0) {
+        const location = data[0];
+        // Construction du nom avec ville, état/région et pays si disponibles
+        const parts = [];
+        if (location.name) parts.push(location.name);
+        if (location.state) parts.push(location.state);
+        if (location.country) parts.push(location.country);
+        
+        return parts.join(', ') || `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+      }
+      
+      return `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+    } catch (error) {
+      console.error('Erreur lors du géocodage inverse:', error);
+      // Retourne les coordonnées en cas d'erreur
+      return `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+    }
+  }
+
+  /**
    * Récupère toutes les données météo (actuelle + prévisions)
    * @param {number} lat - Latitude
    * @param {number} lon - Longitude
@@ -95,6 +132,7 @@ class WeatherAPI {
       throw error;
     }
   }
+
 }
 
 export default WeatherAPI;

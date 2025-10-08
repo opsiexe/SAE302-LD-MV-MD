@@ -3,11 +3,23 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import SearchBar from './SearchBar.vue'
 import CurrentWeatherCard from './CurrentWeatherCard.vue'
 
+// Props pour recevoir les coordonnées météo
+const props = defineProps({
+  weatherCoords: {
+    type: Object,
+    default: () => ({ lat: null, lon: null })
+  }
+})
+
 const isOpen = ref(false)
 const searchValue = ref('')
 
 const toggleDashboard = () => {
   isOpen.value = !isOpen.value
+}
+
+const openDashboard = () => {
+  isOpen.value = true
 }
 
 const handleSearchClick = () => {
@@ -28,6 +40,12 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+})
+
+// Exposer les méthodes pour le composant parent
+defineExpose({
+  openDashboard,
+  toggleDashboard
 })
 </script>
 
@@ -65,11 +83,13 @@ onUnmounted(() => {
       </div>
 
       <!-- Contenu du dashboard qui apparaît après l'animation d'ouverture -->
-      <transition name="slide-in-content">
-        <div v-if="isOpen" class="flex-1 overflow-y-auto px-1 sm:px-3 pb-4 sm:pb-6">
-          <!-- Carte météo actuelle alignée à gauche -->
-          <div class="flex justify-start">
-            <CurrentWeatherCard />
+      <transition name="slide-in-content" mode="out-in">
+        <div v-if="isOpen" class="dashboard-content flex-1 overflow-hidden px-1 sm:px-3 pb-4 sm:pb-6">
+          <div class="content-scroll h-full overflow-y-auto">
+            <!-- Carte météo actuelle alignée à gauche -->
+            <div class="flex justify-start">
+              <CurrentWeatherCard :weather-coords="props.weatherCoords" />
+            </div>
           </div>
         </div>
       </transition>
@@ -109,7 +129,7 @@ onUnmounted(() => {
 .dashboard-container.is-open {
   width: calc(100vw - 4rem);
   max-width: 95rem;
-  height: calc(93vh);
+  height: calc(90vh);
 }
 
 /* Responsive pour tablettes */
@@ -170,8 +190,9 @@ onUnmounted(() => {
 }
 
 .slide-in-content-leave-active {
-  transition: all 0.25s ease;
-  /* Sort plus rapidement pour éviter les glitches */
+  transition: all 0.1s ease;
+  /* Sort très rapidement pour éviter la scrollbar */
+  overflow: hidden !important;
 }
 
 .slide-in-content-enter-from {
@@ -182,6 +203,20 @@ onUnmounted(() => {
 .slide-in-content-leave-to {
   opacity: 0;
   transform: translateY(10px);
+  overflow: hidden !important;
+}
+
+/* Classes spécifiques pour masquer le scroll pendant les animations */
+.dashboard-content {
+  overflow: hidden !important;
+}
+
+.slide-in-content-leave-active .content-scroll {
+  overflow: hidden !important;
+}
+
+.slide-in-content-leave-to .content-scroll {
+  overflow: hidden !important;
 }
 
 /* Animation du titre et bouton fermer - Apparaît avec le redimensionnement */
