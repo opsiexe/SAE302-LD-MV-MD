@@ -71,6 +71,41 @@ class WeatherAPI {
   }
 
   /**
+   * Recherche les coordonnées d'une ville (géocodage direct)
+   * @param {string} cityName - Nom de la ville à rechercher
+   * @returns {Promise<Object>} Coordonnées de la ville {lat, lon, name}
+   */
+  static async searchCity(cityName) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/geocoding?city=${encodeURIComponent(cityName)}`);
+      
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Résultats de recherche ville:', data);
+      
+      // Retourne les coordonnées si trouvées
+      if (data && data.length > 0) {
+        const location = data[0];
+        return {
+          lat: location.lat,
+          lon: location.lon,
+          name: location.name,
+          country: location.country,
+          state: location.state
+        };
+      }
+      
+      throw new Error(`Ville "${cityName}" non trouvée`);
+    } catch (error) {
+      console.error('Erreur lors de la recherche de ville:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Récupère le nom de la ville à partir des coordonnées (géocodage inverse)
    * @param {number} lat - Latitude
    * @param {number} lon - Longitude

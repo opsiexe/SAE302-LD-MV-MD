@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import SearchBar from './SearchBar.vue'
 import CurrentWeatherCard from './CurrentWeatherCard.vue'
+import WeatherAPI from '../services/weatherAPI.js'
 
 // Props pour recevoir les coordonnées météo
 const props = defineProps({
@@ -10,6 +11,9 @@ const props = defineProps({
     default: () => ({ lat: null, lon: null })
   }
 })
+
+// Émissions d'événements
+const emit = defineEmits(['update-coords'])
 
 const isOpen = ref(false)
 const searchValue = ref('')
@@ -25,6 +29,37 @@ const openDashboard = () => {
 const handleSearchClick = () => {
   if (!isOpen.value) {
     isOpen.value = true
+  }
+}
+
+// Gestion de la recherche de ville
+const handleCitySearch = async (cityName) => {
+  if (!cityName || cityName.trim() === '') {
+    return
+  }
+
+  try {
+    console.log('🔍 Recherche de ville:', cityName)
+
+    // Rechercher les coordonnées de la ville
+    const cityData = await WeatherAPI.searchCity(cityName.trim())
+
+    console.log('📍 Ville trouvée:', cityData)
+
+    // Émettre les nouvelles coordonnées vers le parent (App.vue)
+    emit('update-coords', {
+      lat: cityData.lat,
+      lon: cityData.lon
+    })
+
+    // Ouvrir le dashboard si fermé
+    if (!isOpen.value) {
+      isOpen.value = true
+    }
+
+  } catch (error) {
+    console.error('❌ Erreur recherche ville:', error)
+    alert(`Erreur: ${error.message}`)
   }
 }
 
@@ -77,7 +112,7 @@ defineExpose({
           'transition-all duration-500 ease-out flex w-full items-center justify-start'
         ]" @click="handleSearchClick">
           <SearchBar v-model="searchValue" placeholder="Rechercher une ville"
-            :class="isOpen ? 'pointer-events-auto' : ''" />
+            :class="isOpen ? 'pointer-events-auto' : ''" @search="handleCitySearch" />
         </div>
 
       </div>

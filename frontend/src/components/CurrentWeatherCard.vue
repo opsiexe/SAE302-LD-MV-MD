@@ -130,7 +130,7 @@ const hourlyForecast = computed(() => {
     if (!hourlyWeather.value) return []
 
     return hourlyWeather.value.hourly.slice(0, 24).map((hour, index) => ({
-        time: new Date(hour.dt * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit' }) + 'h',
+        time: new Date(hour.dt * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit' }),
         temperature: Math.round(hour.temp),
         condition: translateCondition(hour.weather[0].description),
         icon: getWeatherIcon(hour.weather[0].icon),
@@ -174,7 +174,6 @@ onMounted(() => {
         <!-- En-tête avec condition météo -->
         <div v-else class="weather-header mb-4">
             <h3 class="text-xl font-semibold text-white mb-2">Météo actuelle à {{ displayData.city }}</h3>
-            <p class="text-secon">{{ displayData.condition }}</p>
         </div>
 
         <!-- Section principale avec température, heures de soleil, humidité -->

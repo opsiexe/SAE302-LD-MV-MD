@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import SearchBar from './components/Dashboard.vue';
+import Dashboard from './components/Dashboard.vue';
 import GeoLocationButton from './components/GeoLocationButton.vue';
 import Map from './components/map.vue';
 
@@ -32,6 +32,12 @@ const handleMapClick = (coords) => {
   }
 }
 
+// Fonction déclenchée par la recherche de ville
+const handleCoordsUpdate = (coords) => {
+  console.log('🔍 Nouvelles coordonnées depuis la recherche:', coords);
+  weatherCoords.value = { lat: coords.lat, lon: coords.lon };
+}
+
 // Fonction déclenchée quand on veut réinitialiser l'orientation
 const handleResetBearing = () => {
   if (mapRef.value) {
@@ -43,7 +49,7 @@ const handleResetBearing = () => {
 <template>
   <div id="app" class="h-screen w-screen">
     <Map ref="mapRef" @click-coord="handleMapClick" />
-    <SearchBar ref="dashboardRef" :weather-coords="weatherCoords" />
+    <Dashboard ref="dashboardRef" :weather-coords="weatherCoords" @update-coords="handleCoordsUpdate" />
     <GeoLocationButton @get-location="handleGeoLocation" @reset-bearing="handleResetBearing" />
   </div>
 </template>
