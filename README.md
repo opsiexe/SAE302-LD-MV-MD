@@ -324,27 +324,34 @@ const cityData = await city.json();
 
 ```json
 {
-  "location": {
-    "name": "Paris",
-    "country": "FR",
-    "lat": 48.8566,
-    "lon": 2.3522
-  },
+  "lat": 21,
+  "lon": 55,
+  "timezone": "Asia/Riyadh",
+  "timezone_offset": 10800,
   "current": {
-    "temp": 15.5,
-    "feels_like": 14.2,
-    "humidity": 65,
-    "pressure": 1013,
-    "wind_speed": 3.2,
-    "wind_deg": 220,
-    "weather": {
-      "main": "Clouds",
-      "description": "nuageux",
-      "icon": "04d"
-    }
-  },
-  "cached": false,
-  "timestamp": "2025-01-08T10:30:00Z"
+    "dt": 1759914480,
+    "sunrise": 1759889575,
+    "sunset": 1759932116,
+    "temp": 37.91,
+    "feels_like": 37.24,
+    "pressure": 1008,
+    "humidity": 23,
+    "dew_point": 13.2,
+    "uvi": 8.79,
+    "clouds": 1,
+    "visibility": 10000,
+    "wind_speed": 1.85,
+    "wind_deg": 176,
+    "wind_gust": 1.52,
+    "weather": [
+      {
+        "id": 800,
+        "main": "Clear",
+        "description": "ciel dégagé",
+        "icon": "01d"
+      }
+    ]
+  }
 }
 ```
 
