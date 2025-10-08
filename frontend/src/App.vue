@@ -1,16 +1,41 @@
 <script setup>
 import { ref } from 'vue';
-import SearchBar from './components/Dashboard.vue';
+import Dashboard from './components/Dashboard.vue';
 import GeoLocationButton from './components/GeoLocationButton.vue';
 import Map from './components/map.vue';
 
-// Référence au composant Map
+// Références aux composants
 const mapRef = ref(null);
+const dashboardRef = ref(null);
+// Coordonnées météo actuelles
+const weatherCoords = ref({ lat: null, lon: null });
 
 // Fonction déclenchée quand on reçoit les coordonnées du bouton
 const handleGeoLocation = ({ lat, lon }) => {
   console.log('🌍 Position utilisateur :', lat, lon)
-  alert(`Latitude: ${lat}\nLongitude: ${lon}`)
+  weatherCoords.value = { lat, lon };
+
+  // Ouvrir automatiquement le dashboard
+  if (dashboardRef.value && dashboardRef.value.openDashboard) {
+    dashboardRef.value.openDashboard();
+  }
+}
+
+// Fonction déclenchée quand on clique sur la carte
+const handleMapClick = (coords) => {
+  console.log('🗺️ Clic sur la carte :', coords.lat, coords.lng);
+  weatherCoords.value = { lat: coords.lat, lon: coords.lng };
+
+  // Ouvrir automatiquement le dashboard
+  if (dashboardRef.value && dashboardRef.value.openDashboard) {
+    dashboardRef.value.openDashboard();
+  }
+}
+
+// Fonction déclenchée par la recherche de ville
+const handleCoordsUpdate = (coords) => {
+  console.log('🔍 Nouvelles coordonnées depuis la recherche:', coords);
+  weatherCoords.value = { lat: coords.lat, lon: coords.lon };
 }
 
 // Fonction déclenchée quand on veut réinitialiser l'orientation
@@ -23,8 +48,8 @@ const handleResetBearing = () => {
 
 <template>
   <div id="app" class="h-screen w-screen">
-    <Map ref="mapRef" />
-    <SearchBar />
+    <Map ref="mapRef" @click-coord="handleMapClick" />
+    <Dashboard ref="dashboardRef" :weather-coords="weatherCoords" @update-coords="handleCoordsUpdate" />
     <GeoLocationButton @get-location="handleGeoLocation" @reset-bearing="handleResetBearing" />
   </div>
 </template>

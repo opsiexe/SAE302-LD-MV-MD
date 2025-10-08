@@ -2,6 +2,18 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import SearchBar from './SearchBar.vue'
 import CurrentWeatherCard from './CurrentWeatherCard.vue'
+import WeatherAPI from '../services/weatherAPI.js'
+
+// Props pour recevoir les coordonnées météo
+const props = defineProps({
+  weatherCoords: {
+    type: Object,
+    default: () => ({ lat: null, lon: null })
+  }
+})
+
+// Émissions d'événements
+const emit = defineEmits(['update-coords'])
 
 const isOpen = ref(false)
 const searchValue = ref('')
@@ -10,9 +22,44 @@ const toggleDashboard = () => {
   isOpen.value = !isOpen.value
 }
 
+const openDashboard = () => {
+  isOpen.value = true
+}
+
 const handleSearchClick = () => {
   if (!isOpen.value) {
     isOpen.value = true
+  }
+}
+
+// Gestion de la recherche de ville
+const handleCitySearch = async (cityName) => {
+  if (!cityName || cityName.trim() === '') {
+    return
+  }
+
+  try {
+    console.log('🔍 Recherche de ville:', cityName)
+
+    // Rechercher les coordonnées de la ville
+    const cityData = await WeatherAPI.searchCity(cityName.trim())
+
+    console.log('📍 Ville trouvée:', cityData)
+
+    // Émettre les nouvelles coordonnées vers le parent (App.vue)
+    emit('update-coords', {
+      lat: cityData.lat,
+      lon: cityData.lon
+    })
+
+    // Ouvrir le dashboard si fermé
+    if (!isOpen.value) {
+      isOpen.value = true
+    }
+
+  } catch (error) {
+    console.error('❌ Erreur recherche ville:', error)
+    alert(`Erreur: ${error.message}`)
   }
 }
 
@@ -28,6 +75,12 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+})
+
+// Exposer les méthodes pour le composant parent
+defineExpose({
+  openDashboard,
+  toggleDashboard
 })
 </script>
 
@@ -59,17 +112,19 @@ onUnmounted(() => {
           'transition-all duration-500 ease-out flex w-full items-center justify-start'
         ]" @click="handleSearchClick">
           <SearchBar v-model="searchValue" placeholder="Rechercher une ville"
-            :class="isOpen ? 'pointer-events-auto' : ''" />
+            :class="isOpen ? 'pointer-events-auto' : ''" @search="handleCitySearch" />
         </div>
 
       </div>
 
       <!-- Contenu du dashboard qui apparaît après l'animation d'ouverture -->
-      <transition name="slide-in-content">
-        <div v-if="isOpen" class="flex-1 overflow-y-auto px-1 sm:px-3 pb-4 sm:pb-6">
-          <!-- Carte météo actuelle alignée à gauche -->
-          <div class="flex justify-start">
-            <CurrentWeatherCard />
+      <transition name="slide-in-content" mode="out-in">
+        <div v-if="isOpen" class="dashboard-content flex-1 overflow-hidden px-1 sm:px-3 pb-4 sm:pb-6">
+          <div class="content-scroll h-full overflow-y-auto">
+            <!-- Carte météo actuelle alignée à gauche -->
+            <div class="flex justify-start">
+              <CurrentWeatherCard :weather-coords="props.weatherCoords" />
+            </div>
           </div>
         </div>
       </transition>
@@ -109,7 +164,7 @@ onUnmounted(() => {
 .dashboard-container.is-open {
   width: calc(100vw - 4rem);
   max-width: 95rem;
-  height: calc(93vh);
+  height: calc(90vh);
 }
 
 /* Responsive pour tablettes */
@@ -170,8 +225,9 @@ onUnmounted(() => {
 }
 
 .slide-in-content-leave-active {
-  transition: all 0.25s ease;
-  /* Sort plus rapidement pour éviter les glitches */
+  transition: all 0.1s ease;
+  /* Sort très rapidement pour éviter la scrollbar */
+  overflow: hidden !important;
 }
 
 .slide-in-content-enter-from {
@@ -182,6 +238,20 @@ onUnmounted(() => {
 .slide-in-content-leave-to {
   opacity: 0;
   transform: translateY(10px);
+  overflow: hidden !important;
+}
+
+/* Classes spécifiques pour masquer le scroll pendant les animations */
+.dashboard-content {
+  overflow: hidden !important;
+}
+
+.slide-in-content-leave-active .content-scroll {
+  overflow: hidden !important;
+}
+
+.slide-in-content-leave-to .content-scroll {
+  overflow: hidden !important;
 }
 
 /* Animation du titre et bouton fermer - Apparaît avec le redimensionnement */
