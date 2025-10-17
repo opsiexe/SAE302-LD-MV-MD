@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import SearchBar from './SearchBar.vue'
 import CurrentWeatherCard from './CurrentWeatherCard.vue'
+import DailyWeatherCard from './DailyWeatherCard.vue' // Ajout de l'import
 import WeatherAPI from '../services/weatherAPI.js'
 
 // Props pour recevoir les coordonnées météo
@@ -82,6 +83,17 @@ defineExpose({
   openDashboard,
   toggleDashboard
 })
+
+// Navigation pour DailyWeatherCard
+const selectedDayIndex = ref(0)
+const maxDayIndex = 4 // 5 jours (0 à 4)
+
+const prevDay = () => {
+  if (selectedDayIndex.value > 0) selectedDayIndex.value--
+}
+const nextDay = () => {
+  if (selectedDayIndex.value < maxDayIndex) selectedDayIndex.value++
+}
 </script>
 
 <template>
@@ -101,9 +113,7 @@ defineExpose({
           <div v-if="!isOpen" :class="[
             'transition-all duration-500 ease-out flex w-full justify-center mb-0'
           ]">
-            <font-awesome-icon icon="chevron-up" :class="[
-              'text-xl sm:text-2xl font-bold cursor-pointer transition-all duration-300 text-secon hover:text-text'
-            ]" @click="toggleDashboard" />
+            <font-awesome-icon icon="chevron-up" :class="[ 'text-xl sm:text-2xl font-bold cursor-pointer transition-all duration-300 text-secon hover:text-text' ]" @click="toggleDashboard" />
           </div>
         </transition>
 
@@ -114,16 +124,37 @@ defineExpose({
           <SearchBar v-model="searchValue" placeholder="Rechercher une ville"
             :class="isOpen ? 'pointer-events-auto' : ''" @search="handleCitySearch" />
         </div>
-
       </div>
 
       <!-- Contenu du dashboard qui apparaît après l'animation d'ouverture -->
       <transition name="slide-in-content" mode="out-in">
         <div v-if="isOpen" class="dashboard-content flex-1 overflow-hidden px-1 sm:px-3 pb-4 sm:pb-6">
           <div class="content-scroll h-full overflow-y-auto">
-            <!-- Carte météo actuelle alignée à gauche -->
-            <div class="flex justify-start">
+            <!-- Ligne principale : CurrentWeatherCard à gauche, DailyWeatherCard unique à droite avec navigation -->
+            <div class="flex flex-row gap-6 mb-6 items-start">
               <CurrentWeatherCard :weather-coords="props.weatherCoords" />
+              <div class="flex flex-col items-center">
+                <div class="flex flex-row items-center gap-2">
+                  <button
+                    class="nav-arrow rounded-full bg-card-secon text-secon hover:bg-secon hover:text-main p-3 transition text-2xl"
+                    @click="prevDay"
+                    :disabled="selectedDayIndex === 0"
+                  >
+                    <font-awesome-icon icon="chevron-left" />
+                  </button>
+                  <DailyWeatherCard :day-index="selectedDayIndex" />
+                  <button
+                    class="nav-arrow rounded-full bg-card-secon text-secon hover:bg-secon hover:text-main p-3 transition text-2xl"
+                    @click="nextDay"
+                    :disabled="selectedDayIndex === maxDayIndex"
+                  >
+                    <font-awesome-icon icon="chevron-right" />
+                  </button>
+                </div>
+                <div class="mt-2 text-xs text-secon">
+                  Jour {{ selectedDayIndex + 1 }} / {{ maxDayIndex + 1 }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
