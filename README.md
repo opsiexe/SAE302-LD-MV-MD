@@ -135,21 +135,7 @@ git clone https://github.com/opsiexe/SAE302-LD-MV-MD.git
 cd SAE302-LD-MV-MD
 ```
 
-2. **Configuration du backend**
-
-```bash
-cd backend
-npm install
-```
-
-3. **Configuration du frontend**
-
-```bash
-cd ../frontend
-npm install
-```
-
-4. **Variables d'environnement**
+2. **Variables d'environnement**
    Créer un fichier `.env` dans le dossier `backend/` :
 
 ```env
@@ -175,49 +161,6 @@ CACHE_TTL_FORECAST=3600  # 1 heure pour prévisions
 git clone https://github.com/opsiexe/SAE302-LD-MV-MD.git
 cd SAE302-LD-MV-MD
 docker-compose up --build
-```
-
-## 🚀 Démarrage
-
-### Développement local
-
-1. **Démarrer Redis**
-
-```bash
-# Avec Docker
-docker run -d -p 6379:6379 redis:7
-
-# Ou avec installation locale de Redis
-redis-server
-```
-
-2. **Démarrer le backend**
-
-```bash
-cd backend
-npm run dev
-# Serveur disponible sur http://localhost:5000
-```
-
-3. **Démarrer le frontend**
-
-```bash
-cd frontend
-npm run dev
-# Application disponible sur http://localhost:3000
-```
-
-### Production avec Docker
-
-```bash
-# Démarrage de tous les services
-docker-compose up -d
-
-# Vérifier le statut
-docker-compose ps
-
-# Logs en temps réel
-docker-compose logs -f
 ```
 
 ## 📁 Structure du projet
@@ -304,7 +247,7 @@ export const config = {
 | `GET`   | `/weather/hourly`   | Prévisions horaires (48h)    | `lat`, `lon`    |
 | `GET`   | `/weather/daily`    | Prévisions journalières (7j) | `lat`, `lon`    |
 | `GET`   | `/weather/alerts`   | Alertes météorologiques      | `lat`, `lon`    |
-| `GET`   | `/geocoding/search` | Recherche de ville           | `q` (nom ville) |
+| `GET`   | `/geocoding/search` | Recherche de ville           | `city` (nom ville) |
 
 ### Exemple d'utilisation
 
