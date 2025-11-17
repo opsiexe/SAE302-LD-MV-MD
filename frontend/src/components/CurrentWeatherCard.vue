@@ -287,7 +287,7 @@ onMounted(() => {
                                     <!-- Température -->
                                     <div class="temperature">
                                         <span class="text-lg font-bold text-white">{{ forecast.temperature
-                                            }}°</span>
+                                        }}°</span>
                                     </div>
 
                                     <!-- Condition -->
